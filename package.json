@@ -1,0 +1,11 @@
+{
+  "name": "simple_static_site_hosting_project",
+  "version": "1.0.0",
+  "description": "A Static Site Hosting Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jalal Ahmed",
+  "license": "ISC"
+}
