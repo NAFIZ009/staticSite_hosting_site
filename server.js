@@ -6,7 +6,6 @@ const app = express();
 
 //view engine configuration
 app.set('view engine',"ejs");
-app.set('views','/views');
 
 //entry point
 app.get('/',(req,res)=>{
