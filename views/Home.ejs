@@ -7,10 +7,13 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Anton&family=Roboto+Slab:wght@200;400;900&display=swap");
     </style>
+    <script src="https://kit.fontawesome.com/23c828fab0.js" crossorigin="anonymous"></script>
     <!-- tailwindCss -->
     <script src="https://cdn.tailwindcss.com"></script>
+
   </head>
   <body>
+    
     <div class="bg-white">
       <!-- header -->
       <header class="absolute inset-x-0 top-0 z-50">
@@ -37,6 +40,7 @@
           </div>
         </nav>
       </header>
+      <% if(page=='home') {%>
       <div class="mx-auto max-w-8xl py-24 sm:px-6 sm:py-26 lg:px-8">
         <div
           class="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0"
@@ -79,7 +83,7 @@
               class="mt-10 flex items-center justify-center gap-x-6 lg:justify-start"
             >
               <a
-                href="#"
+                href="./upload.ejs"
                 class="rounded-md bg-white px-3.5 py-2.5 text-sm font-bold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >Host Your Site</a
               >
@@ -99,6 +103,10 @@
           </div>
         </div>
       </div>
+      <% } else if(page=='upload') {%>
+        <%- include('./upload.ejs') %>
+        <% } %>
     </div>
+    
   </body>
 </html>

@@ -9,7 +9,7 @@ app.set('view engine',"ejs");
 
 //entry point
 app.get('/',(req,res)=>{
-    res.render('Home',{});
+    res.render('Home',{page:'upload'});
 });
 
 //for /upload files
