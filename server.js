@@ -1,5 +1,5 @@
 const express = require('express')
-const port = 3047;
+const port = 3000;
 
 //app config
 const app = express();
@@ -13,7 +13,7 @@ app.get('/',(req,res)=>{
 });
 
 //for /upload files
-app.use('/upload',require('./routes/upload'));
+app.use('/upload',require('./routes/uploadRoutes'));
 
 //static file access
 app.use('/site/:siteID',(req,res,next)=>{
