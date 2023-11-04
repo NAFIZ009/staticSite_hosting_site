@@ -6,14 +6,22 @@ const uploadControllers=require('../controllers/uploadControllers');
 
 
 //route configuration
-const route= express();
+const uploadRoute= express();
+
+//view engine configuration
+uploadRoute.set('view engine',"ejs");
+
 //file upload configuration
-route.use(fileUpload());
+uploadRoute.use(fileUpload());
 
 
 //entry pont for /upload
+uploadRoute.get('/',(req,res)=>{
+    res.render('Home',{page:'upload'});
+});
+
 //zip file will be send by users and the api will unzip it and store in local storage 
-route.post('/',inputValidation,directoryGenerator,uploadControllers.uploadFile);
+uploadRoute.post('/folder',inputValidation,directoryGenerator,uploadControllers.uploadFile);
 
 //exporting route
-module.exports=route;
+module.exports=uploadRoute;

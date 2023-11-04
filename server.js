@@ -9,11 +9,15 @@ app.set('view engine',"ejs");
 
 //entry point
 app.get('/',(req,res)=>{
-    res.render('Home',{page:'upload'});
+    res.render('Home',{page:'home'});
 });
 
 //for /upload files
 app.use('/upload',require('./routes/uploadRoutes'));
+//for registration 
+app.use('/reg',require('./routes/regRoutes'));
+//for login 
+// app.use('/login',require('./routes/logInRoutes'));
 //for images
 app.use('/img',express.static('public'))
 
