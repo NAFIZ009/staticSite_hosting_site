@@ -9,11 +9,13 @@ app.set('view engine',"ejs");
 
 //entry point
 app.get('/',(req,res)=>{
-    res.render('first',{});
+    res.render('Home',{});
 });
 
 //for /upload files
 app.use('/upload',require('./routes/uploadRoutes'));
+//for images
+app.use('/img',express.static('public'))
 
 //static file access
 app.use('/site/:siteID',(req,res,next)=>{
