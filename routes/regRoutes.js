@@ -12,6 +12,6 @@ regRoute.get('/',(req, res) => {
 });
 
 
-regRoute.post('/create',regControllers.createUser);
+regRoute.post('/',regControllers.createUser);
 
 module.exports=regRoute;
