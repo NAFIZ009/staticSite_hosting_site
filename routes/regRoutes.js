@@ -8,7 +8,7 @@ regRoute.use(express.urlencoded({ extended: true}));
 regRoute.use(fileUpload());
 
 regRoute.get('/',(req, res) => {
-    
+    res.render('Home',{page:'reg'})
 });
 
 

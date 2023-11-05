@@ -17,28 +17,7 @@
     <div class="bg-white">
       <!-- header -->
       <header class="absolute inset-x-0 top-0 z-50">
-        <nav
-          class="flex items-center justify-between p-6 lg:px-8"
-          aria-label="Global"
-        >
-          <div class="flex lg:flex-1">
-            <a href="/" class="-m-1.5 p-1.5">
-              <span
-                class="py-1 px-2 text-gray-900 border-2 font-semibold text-2xl rounded-lg border-indigo-600"
-                style="
-                  font-family: 'Anton', sans-serif;
-                  font-family: 'Roboto Slab', serif;
-                "
-                >Hosty.</span
-              >
-            </a>
-          </div>
-          <div class="lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
-              >Log in <span aria-hidden="true">&rarr;</span></a
-            >
-          </div>
-        </nav>
+        <%- include('./nav.ejs') %>
       </header>
       <% if(page=='home') {%>
       <div class="mx-auto max-w-8xl py-24 sm:px-6 sm:py-26 lg:px-8">
@@ -105,7 +84,11 @@
       </div>
       <% } else if(page=='upload') {%>
         <%- include('./upload.ejs') %>
-        <% } %>
+        <% }else if(page=='login') { %>
+          <%- include('./login.ejs') %>
+        <%}else if(page=='reg') { %>  
+          <%- include('./reg.ejs') %>
+        <%}%>  
     </div>
     
   </body>

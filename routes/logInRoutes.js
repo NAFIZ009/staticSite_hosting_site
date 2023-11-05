@@ -12,7 +12,7 @@ logInRoute.use(express.urlencoded({ extended: true}));
 logInRoute.use(fileUpload());
 
 logInRoute.get('/',(req, res) => {
-    res.render('login',{});
+    res.render('home',{page:'login'});
 });
 
 
