@@ -23,5 +23,6 @@ exports.uploadFile=(req,res)=>{
     //url for the uploaded files
     const siteURL = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${zipFolderName}`;
 
-    res.send('Files uploaded successfully!URL: ' + siteURL);
+    // res.send('Files uploaded successfully!URL: ' + siteURL);
+    res.render('Home',{page:'home'});
 }

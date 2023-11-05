@@ -1,13 +1,14 @@
-const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
 
 const directoryGenerator=(req,res,next)=>{
-    //create a unique folder
-    const siteID = uuidv4();
-    const siteDirectory = `uploads/${siteID}`;
+    console.log(req.cookies.token);
+    const {userId}=jwt.verify(req.cookies.token,process.env.SECRET_KEY);
+    //create a folder according to the userId
+    const siteDirectory = `uploads/${userId}`;
     fs.mkdirSync(siteDirectory);
     req.siteDirectory = siteDirectory;
-    req.siteID = siteID;
+    req.siteID = userId;
     next();
 }
 

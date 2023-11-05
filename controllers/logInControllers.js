@@ -9,7 +9,7 @@ exports.logInUser = async (req, res) => {
       const userPass=user.password;
       bcrypt.compare( password,userPass, (err, result) => {
         if (result) {
-            const token=jwt.sign({username},process.env.SECRET_KEY);
+            const token=jwt.sign({userId:user.userId},process.env.SECRET_KEY);
             //set as cookie
             res.cookie('token', token, { httpOnly: true});
             // Passwords match

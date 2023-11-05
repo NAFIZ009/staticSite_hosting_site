@@ -5,15 +5,26 @@
     <div
       class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5"
     >
-      <form action="/upload/folder" method="post" enctype="multipart/form-data">
+      <form onsubmit="zipFiles(event)">
         <div class="p-4">
-            <div class="mx-auto max-w-7xl px-2 lg:px-8 py-5">
-                <div class="mx-auto max-w-2xl text-center">
-                  <h2 class="text-base font-semibold leading-7 text-indigo-600">Deploy Your website</h2>
-                  <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Deploy Your Static Website</p>
-                  <p class="mt-6 text-lg leading-8 text-gray-600">Upload your <span class="font-bold">Project Directory</span>.The <span class="font-bold">Entry Point</span> of your website have to in the <span class="font-bold">Root Folder</span> and named as <span class="font-bold">index.html</span></p>
-                </div>
-            </div>    
+          <div class="mx-auto max-w-7xl px-2 lg:px-8 py-5">
+            <div class="mx-auto max-w-2xl text-center">
+              <h2 class="text-base font-semibold leading-7 text-indigo-600">
+                Deploy Your website
+              </h2>
+              <p
+                class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+              >
+                Deploy Your Static Website
+              </p>
+              <p class="mt-6 text-lg leading-8 text-gray-600">
+                Upload your <span class="font-bold">Project Directory</span>.The
+                <span class="font-bold">Entry Point</span> of your website have
+                to in the <span class="font-bold">Root Folder</span> and named
+                as <span class="font-bold">index.html</span>
+              </p>
+            </div>
+          </div>
           <div>
             <label
               for="price"
@@ -26,6 +37,10 @@
                 name="upload"
                 class="block w-full rounded-md border-0 py-1.5 pl-4 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
                 placeholder="Upload Your Directory"
+                id="fileInput"
+                webkitdirectory=""
+                directory=""
+                multiple
               />
             </div>
           </div>
@@ -42,4 +57,38 @@
       </form>
     </div>
   </div>
-</div>
+</div> 
+<script>
+  function zipFiles(e) {
+    e.preventDefault();
+    const files = e.target.upload.files;
+    const zip = new JSZip();
+
+    if (files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (
+          file.type == "text/html" ||
+          file.type == "text/css" ||
+          file.type == "text/javascript" ||
+          file.type == "image/jpeg"
+        ) {
+          zip.file(file.webkitRelativePath, file);
+        }
+      }
+
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        // Trigger download of the zip file
+        const blob = new Blob([content], { type: "application/zip" });
+        const formData = new FormData();
+        formData.append("upload", blob);
+        fetch("/upload/", {
+          method: "POST",
+          body: formData,
+        }).then((res)=>{
+          console.log(res);
+        })
+      });
+    }
+  }
+</script>
