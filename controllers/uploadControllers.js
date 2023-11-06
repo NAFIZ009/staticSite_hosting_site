@@ -1,6 +1,8 @@
 const AdmZip = require('adm-zip');
+const SiteURL = require('../models/SiteURL');
+const jwt = require('jsonwebtoken');
 
-exports.uploadFile=(req,res)=>{
+exports.uploadFile=async(req,res)=>{
     //getting zip file
     const uploadedFiles = req.files.upload;
         
@@ -23,6 +25,14 @@ exports.uploadFile=(req,res)=>{
     //url for the uploaded files
     const siteURL = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${zipFolderName}`;
 
+    console.log('Uploading')
     // res.send('Files uploaded successfully!URL: ' + siteURL);
-    res.render('Home',{page:'home'});
+    const token = req.cookies.token;
+    jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
+        const site=await SiteURL.create({userId:decoded.userId,url:siteURL})
+        res.send({
+            status:'success',
+            siteURL
+        });
+    });
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const logInControllers = require('../controllers/logInControllers');
+const { isLoggedIn, loggedIn } = require('../utilits/userState');
 
 const logInRoute=express();
 
@@ -16,6 +17,8 @@ logInRoute.get('/',(req, res) => {
 });
 
 
-logInRoute.post('/',logInControllers.logInUser);
+logInRoute.post('/',logInControllers.logInUser,loggedIn,(req, res) => {
+    res.redirect('/upload');
+});
 
 module.exports=logInRoute;

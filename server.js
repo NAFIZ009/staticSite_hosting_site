@@ -3,6 +3,7 @@ const dotenv=require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const port = 3000;
 const tokenAuth = require('./middleware/privateRouteVerification/tokenAuth');
+const {isLoggedIn }=require('./utilits/userState');
 //app config
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cookieParser());
 
 //entry point
 app.get('/',(req,res)=>{
+    console.log(isLoggedIn)
     res.render('Home',{page:'home'});
 });
 

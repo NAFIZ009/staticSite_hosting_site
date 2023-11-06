@@ -2,7 +2,7 @@ const Users = require('../models/Users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.logInUser = async (req, res) => {
+exports.logInUser = async (req, res,next) => {
     const { username,password } = req.body;
     try {
       const user= await Users.findOne({where:{name: username}});
@@ -13,7 +13,8 @@ exports.logInUser = async (req, res) => {
             //set as cookie
             res.cookie('token', token, { httpOnly: true});
             // Passwords match
-            res.redirect('/upload');
+            // res.redirect('/upload');
+            next();
         } else {
             // Passwords don't match
             console.log('Password is incorrect');

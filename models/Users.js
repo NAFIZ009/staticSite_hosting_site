@@ -1,5 +1,6 @@
 const { Sequelize,DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
+const SiteURL = require('./SiteURL');
 
 const Users=sequelize.define('User',{
     userId:{
@@ -19,5 +20,8 @@ const Users=sequelize.define('User',{
 });
 
 Users.sync();
+
+// Users.hasMany(SiteURL, { foreignKey: 'userId' });
+// SiteURL.belongsTo(Users, { foreignKey: 'userId' });
 
 module.exports=Users;

@@ -5,7 +5,7 @@
     <div
       class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5"
     >
-      <form onsubmit="zipFiles(event)">
+      <form onsubmit="zipFiles(event)" id="form" class="">
         <div class="p-4">
           <div class="mx-auto max-w-7xl px-2 lg:px-8 py-5">
             <div class="mx-auto max-w-2xl text-center">
@@ -55,10 +55,17 @@
           </button>
         </div>
       </form>
+      <div class="p-12 text-center hidden" id="url-box">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl text-indigo-600">Your Site Is Deployed</h2>
+        <span class="font-bold">Link:</span><br>
+        <a class="text-xl font-bold tracking-tight text-gray-600 hover:underline" target="_blank" id="link"></a>
+      </div>
+    
     </div>
   </div>
-</div> 
+</div>
 <script>
+  // document.getElementById('form').classList.remove("hidden");
   function zipFiles(e) {
     e.preventDefault();
     const files = e.target.upload.files;
@@ -85,8 +92,17 @@
         fetch("/upload/", {
           method: "POST",
           body: formData,
-        }).then((res)=>{
-          console.log(res);
+        }).then((res) =>res.json())
+        .then((obj)=>{
+          console.log(obj);
+          const {status,siteURL}=obj;
+          if(status=='success')
+          {
+            document.getElementById('form').classList.add('hidden');
+            document.getElementById('url-box').classList.remove('hidden');
+            document.getElementById('link').innerHTML=siteURL;
+            document.getElementById('link').href=siteURL;
+          }
         })
       });
     }
