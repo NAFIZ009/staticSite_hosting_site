@@ -90,7 +90,9 @@
           <%- include('./login.ejs') %>
         <%}else if(page=='reg') { %>  
           <%- include('./reg.ejs') %>
-        <%}%>  
+        <%}else if(page=='dashboard') {%> 
+          <%- include('./dashboard.ejs') %> 
+        <% } %>  
     </div>
     
   </body>

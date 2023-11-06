@@ -3,7 +3,7 @@ const dotenv=require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const port = 3000;
 const tokenAuth = require('./middleware/privateRouteVerification/tokenAuth');
-const {isLoggedIn }=require('./utilits/userState');
+const isLoggedIn = require('./middleware/isLoggedIn');
 //app config
 const app = express();
 
@@ -13,10 +13,15 @@ app.set('view engine',"ejs");
 app.use(cookieParser());
 
 //entry point
-app.get('/',(req,res)=>{
-    console.log(isLoggedIn)
-    res.render('Home',{page:'home'});
+app.get('/',isLoggedIn,(req,res)=>{
+    const isLoggedIn=req.isLoggedIn;
+    res.render('Home',{page:'home',isLoggedIn});
 });
+
+app.get('/logout',(req,res)=>{
+    res.clearCookie('token');
+    res.redirect('/login'); 
+})
 
 //for /upload files
 app.use('/upload',tokenAuth,require('./routes/uploadRoutes'));
@@ -24,6 +29,8 @@ app.use('/upload',tokenAuth,require('./routes/uploadRoutes'));
 app.use('/reg',require('./routes/regRoutes'));
 //for login 
 app.use('/login',require('./routes/logInRoutes'));
+//dashboard
+app.use('/dashboard',require('./routes/dashboardRoutes'));
 //for images
 app.use('/img',express.static('public'))
 

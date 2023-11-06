@@ -1,7 +1,7 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const logInControllers = require('../controllers/logInControllers');
-const { isLoggedIn, loggedIn } = require('../utilits/userState');
+const isLoggedIn = require('../middleware/isLoggedIn');
 
 const logInRoute=express();
 
@@ -12,12 +12,13 @@ logInRoute.use(express.urlencoded({ extended: true}));
 
 logInRoute.use(fileUpload());
 
-logInRoute.get('/',(req, res) => {
-    res.render('home',{page:'login'});
+logInRoute.get('/',isLoggedIn,(req, res) => {
+    const isLoggedIn=req.isLoggedIn;
+    res.render('home',{page:'login',isLoggedIn});
 });
 
 
-logInRoute.post('/',logInControllers.logInUser,loggedIn,(req, res) => {
+logInRoute.post('/',logInControllers.logInUser,(req, res) => {
     res.redirect('/upload');
 });
 

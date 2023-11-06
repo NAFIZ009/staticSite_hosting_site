@@ -4,7 +4,7 @@ const inputValidation = require('../middleware/validation-middleware/inputValida
 const directoryGenerator = require('../middleware/directoryGenerator');
 const uploadControllers=require('../controllers/uploadControllers');
 const tokenAuth = require('../middleware/privateRouteVerification/tokenAuth');
-
+const isLoggedIn = require('../middleware/isLoggedIn');
 
 //route configuration
 const uploadRoute= express();
@@ -21,12 +21,14 @@ uploadRoute.use(fileUpload());
 
 
 //entry pont for /upload
-uploadRoute.get('/',tokenAuth,(req,res)=>{
-    res.render('Home',{page:'upload'});
+uploadRoute.get('/',tokenAuth,isLoggedIn,(req,res)=>{
+    const isLoggedIn=req.isLoggedIn;
+    res.render('Home',{page:'upload',isLoggedIn});
 });
 
 //zip file will be send by users and the api will unzip it and store in local storage 
-uploadRoute.post('/',inputValidation,directoryGenerator,uploadControllers.uploadFile);
+uploadRoute.post('/directory',inputValidation,directoryGenerator,uploadControllers.uploadFile);
+// uploadRoute.post('/single',inputValidation,directoryGenerator,uploadControllers.uploadFile);
 
 
 
