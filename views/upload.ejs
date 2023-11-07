@@ -1,10 +1,11 @@
 <div class="relative py-24 sm:px-6 sm:py-26 lg:px-8 mx-auto">
   <div
-    class="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4"
+    class="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4 pb-20"
   >
     <div
       class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5"
     >
+    
       <form onsubmit="zipFiles(event)" id="form" class="">
         <div class="p-4">
           <div class="mx-auto max-w-7xl px-2 lg:px-8 py-5">
@@ -45,8 +46,8 @@
             </div>
           </div>
         </div>
-        <p class="my-6 ms-4 text-lg leading-8 text-gray-600">
-          Want Deploy Single <a href="" class="font-bold">HTML File?</a>.
+        <p class="my-6 ms-4 text-lg leading-8 text-gray-600 font-semibold">
+          <a href="/upload/single" class="">Want Deploy Single HTML File?</a>
         </p>
         <div class="flex justify-center divide-x divide-gray-900/5 bg-gray-50">
           <button
@@ -58,6 +59,7 @@
           </button>
         </div>
       </form>
+
       <div class="p-12 text-center hidden" id="url-box">
         <h2 class="text-3xl font-bold tracking-tight sm:text-4xl text-indigo-600">Your Site Is Deployed</h2>
         <span class="font-bold">Link:</span><br>
@@ -92,7 +94,7 @@
         const blob = new Blob([content], { type: "application/zip" });
         const formData = new FormData();
         formData.append("upload", blob);
-        fetch("/upload/", {
+        fetch("/upload", {
           method: "POST",
           body: formData,
         }).then((res) =>res.json())

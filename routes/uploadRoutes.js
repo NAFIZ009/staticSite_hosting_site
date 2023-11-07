@@ -20,16 +20,21 @@ uploadRoute.use(express.json());
 uploadRoute.use(fileUpload());
 
 
-//entry pont for /upload
+//entry pont for directory upload
 uploadRoute.get('/',tokenAuth,isLoggedIn,(req,res)=>{
     const isLoggedIn=req.isLoggedIn;
     res.render('Home',{page:'upload',isLoggedIn});
 });
-
 //zip file will be send by users and the api will unzip it and store in local storage 
-uploadRoute.post('/directory',inputValidation,directoryGenerator,uploadControllers.uploadFile);
-// uploadRoute.post('/single',inputValidation,directoryGenerator,uploadControllers.uploadFile);
+uploadRoute.post('/',inputValidation,directoryGenerator,uploadControllers.uploadFile);
+//entry point for single upload
+uploadRoute.get('/single',tokenAuth,isLoggedIn,(req,res)=>{
+    const isLoggedIn=req.isLoggedIn;
+    res.render('Home',{page:'singleUpload',isLoggedIn,status:'false',siteURL:''});
+});
 
+uploadRoute.post('/single',inputValidation,directoryGenerator,uploadControllers.uploadFileSingle);
+// 
 
 
 //exporting route
