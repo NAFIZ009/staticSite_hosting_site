@@ -58,12 +58,8 @@ exports.uploadFileSingle=async(req,res)=>{
         const token = req.cookies.token;
         jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
             const site=await SiteURL.create({userId:decoded.userId,url:siteURL});
-            res.render('Home',{page:'singleUpload',isLoggedIn,status:'',
+            res.render('Home',{page:'singleUpload',isLoggedIn,status:true,
             siteURL});
-            // res.send({
-            //     status:'success',
-            //     siteURL
-            // });
         });
     });
     

@@ -30,12 +30,10 @@ uploadRoute.post('/',inputValidation,directoryGenerator,uploadControllers.upload
 //entry point for single upload
 uploadRoute.get('/single',tokenAuth,isLoggedIn,(req,res)=>{
     const isLoggedIn=req.isLoggedIn;
-    res.render('Home',{page:'singleUpload',isLoggedIn,status:'false',siteURL:''});
+    res.render('Home',{page:'singleUpload',isLoggedIn,status:false,siteURL:''});
 });
 
 uploadRoute.post('/single',inputValidation,directoryGenerator,uploadControllers.uploadFileSingle);
-// 
-
 
 //exporting route
 module.exports=uploadRoute;
