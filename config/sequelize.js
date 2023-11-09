@@ -2,7 +2,7 @@
 const {Sequelize} = require('sequelize');
 const {DB_NAME,DB_USERNAME,DB_PASSWORD}=process.env;
 const sequelize = new Sequelize(DB_NAME,DB_USERNAME,DB_PASSWORD,{
-    host: 'localhost',
+    host: 'bvx8mjcqraovgaf4wi4m-mysql.services.clever-cloud.com',
     dialect: 'mysql',
     pool: {
         max: 5, // Maximum number of connection in pool
