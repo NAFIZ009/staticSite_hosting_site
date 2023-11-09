@@ -25,12 +25,16 @@ app.get('/logout',(req,res)=>{
 
 //for /upload files
 app.use('/upload',tokenAuth,require('./routes/uploadRoutes'));
+
 //for registration 
 app.use('/reg',require('./routes/regRoutes'));
+
 //for login 
 app.use('/login',require('./routes/logInRoutes'));
+
 //dashboard
 app.use('/dashboard',require('./routes/dashboardRoutes'));
+
 //for images
 app.use('/img',express.static('public'))
 
@@ -40,6 +44,11 @@ app.use('/site/:siteID',(req,res,next)=>{
     req.url=`/${siteID}${req.url}`;
     next();
 },express.static('uploads'));
+
+app.use((err,req, res, next)=>{
+    res.send("Server error.Please try again");
+});
+
 
 //listing config
 app.listen(port, () => {

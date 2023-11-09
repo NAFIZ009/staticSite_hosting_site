@@ -23,17 +23,36 @@ uploadRoute.use(fileUpload());
 //entry pont for directory upload
 uploadRoute.get('/',tokenAuth,isLoggedIn,(req,res)=>{
     const isLoggedIn=req.isLoggedIn;
-    res.render('Home',{page:'upload',isLoggedIn});
+    const err=req.query.err;
+    res.render('Home',{page:'upload',isLoggedIn,err});
 });
+
 //zip file will be send by users and the api will unzip it and store in local storage 
-uploadRoute.post('/',inputValidation,directoryGenerator,uploadControllers.uploadFile);
+uploadRoute.post('/',inputValidation,tokenAuth,directoryGenerator,uploadControllers.uploadFile);
+
+
 //entry point for single upload
 uploadRoute.get('/single',tokenAuth,isLoggedIn,(req,res)=>{
     const isLoggedIn=req.isLoggedIn;
     res.render('Home',{page:'singleUpload',isLoggedIn,status:false,siteURL:''});
 });
 
+//single file upload
 uploadRoute.post('/single',inputValidation,directoryGenerator,uploadControllers.uploadFileSingle);
+
+//error handling
+uploadRoute.use((err, req, res,next)=>{
+    if(err.message=='Invalid File Type' || err.message=='server_error')
+    {
+        res.send({
+            status:'error',
+            siteURL:'/'
+        })
+    }else if(err.message=='token_expired')
+    {
+        res.redirect('../login');
+    }
+});
 
 //exporting route
 module.exports=uploadRoute;

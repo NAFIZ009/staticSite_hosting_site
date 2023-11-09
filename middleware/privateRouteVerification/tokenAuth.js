@@ -6,6 +6,7 @@ const tokenAuth=(req,res,next)=>{
         res.redirect('/login');
         return;
     }
+    
 
     jwt.verify(token,process.env.SECRET_KEY, (err, decoded) => {
         if (err) {

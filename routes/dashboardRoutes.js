@@ -1,6 +1,6 @@
 const express = require('express');
 const tokenAuth = require('../middleware/privateRouteVerification/tokenAuth');
-const { dashboardControllers,dataImport } = require('../controllers/dashboardControllers');
+const { dataImport } = require('../controllers/dashboardControllers');
 const isLoggedIn = require('../middleware/isLoggedIn');
 
 //route configuration

@@ -45,6 +45,14 @@
               />
             </div>
           </div>
+
+          <div class="bg-red-100 mt-2 text-blue-700 px-4 py-3 rounded relative text-red-600 font-semibold hidden" role="alert" id="alert">
+            <strong class="">Error!</strong>
+            <span class="block sm:inline" id="msg"></span>
+          </div>
+          
+
+          
         </div>
         <p class="my-6 ms-4 text-lg leading-8 text-gray-600 font-semibold">
           <a href="/upload/single" class="">Want Deploy Single HTML File?</a>
@@ -61,11 +69,10 @@
       </form>
 
       <div class="p-12 text-center hidden" id="url-box">
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl text-indigo-600">Your Site Is Deployed</h2>
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl text-indigo-600" id="form-msg">Your Site Is Deployed</h2>
         <span class="font-bold">Link:</span><br>
         <a class="text-xl font-bold tracking-tight text-gray-600 hover:underline" target="_blank" id="link"></a>
       </div>
-    
     </div>
   </div>
 </div>
@@ -74,9 +81,20 @@
   function zipFiles(e) {
     e.preventDefault();
     const files = e.target.upload.files;
+    //creating zip files
     const zip = new JSZip();
-
+    //checking the file length
     if (files.length > 0) {
+      //checking the index.html file in root folder
+      const rootFile=Object.values(files).some(file=>file.name=='index.html'&&file.webkitRelativePath.split('/').length == 2);
+
+      //error handling for missing index.html file in root folder
+      if(!rootFile){
+        document.getElementById('alert').classList.remove('hidden');
+        document.getElementById('msg').innerHTML="Please place your <span class='font-bold'>index.html</span> file in the root directory";
+        return;
+      }
+      //zipping the uploaded file
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (
@@ -89,27 +107,55 @@
         }
       }
 
-      zip.generateAsync({ type: "blob" }).then(function (content) {
-        // Trigger download of the zip file
-        const blob = new Blob([content], { type: "application/zip" });
-        const formData = new FormData();
-        formData.append("upload", blob);
-        fetch("/upload", {
-          method: "POST",
-          body: formData,
-        }).then((res) =>res.json())
-        .then((obj)=>{
-          console.log(obj);
-          const {status,siteURL}=obj;
-          if(status=='success')
-          {
-            document.getElementById('form').classList.add('hidden');
-            document.getElementById('url-box').classList.remove('hidden');
-            document.getElementById('link').innerHTML=siteURL;
-            document.getElementById('link').href=siteURL;
-          }
+      //generating blob type zip file
+      zip.generateAsync({ type: "blob" })
+        .then(content=> {
+
+          // Trigger download of the zip file
+          const blob = new Blob([content], { type: "application/zip" });
+          const formData = new FormData();
+          formData.append("upload", blob);
+
+          // sending the zip file to the server
+          fetch("/upload", {
+            method: "POST",
+            body: formData,
+          })
+          .then((res) =>res.json())
+          .then((obj)=>{
+            console.log(obj);
+            const {status,siteURL}=obj;
+            if(status=='success')
+            {
+              document.getElementById('form').classList.add('hidden');
+              document.getElementById('url-box').classList.remove('hidden');
+              document.getElementById('form-msg').classList.add('text-indigo-600');
+              document.getElementById('link').innerHTML=siteURL;
+              document.getElementById('link').href=siteURL;
+            }else if(status=='error')
+            {
+              document.getElementById('form').classList.add('hidden');
+              document.getElementById('url-box').classList.remove('hidden');
+              document.getElementById('form-msg').innerHTML="Internal Server Error";
+              document.getElementById('form-msg').classList.add('text-red-600');
+              document.getElementById('link').innerHTML=siteURL;
+              document.getElementById('link').href=siteURL;
+            }
+          })
+          .catch(err=>{
+            document.getElementById('alert').classList.remove('hidden');
+            document.getElementById('msg').innerHTML="Can't Upload the directory.Please try again";
+          });
+
         })
-      });
+        .catch(err=>{
+          document.getElementById('alert').classList.remove('hidden');
+          document.getElementById('msg').innerHTML="Can't Upload the directory.Please try again";
+        });
+
+    }else{
+      document.getElementById('alert').classList.remove('hidden');
+      document.getElementById('msg').innerHTML="No File is Chosen";
     }
   }
 </script>

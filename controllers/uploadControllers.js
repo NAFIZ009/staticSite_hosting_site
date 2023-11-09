@@ -5,11 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const isLoggedIn = require('../middleware/isLoggedIn');
 
-exports.uploadFile=async(req,res)=>{
+//upload directory
+exports.uploadFile=async(req,res,next)=>{
     //getting zip file
     const uploadedFiles = req.files.upload;
     
-        
     //unzipping the folder and placed it
     const zip=new AdmZip(uploadedFiles.data);
     zip.extractAllTo(req.siteDirectory,'true');
@@ -33,6 +33,10 @@ exports.uploadFile=async(req,res)=>{
     // res.send('Files uploaded successfully!URL: ' + siteURL);
     const token = req.cookies.token;
     jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
+        if(err)
+        {
+            next(new Error('token_expired'));
+        }
         const site=await SiteURL.create({userId:decoded.userId,url:siteURL})
         res.send({
             status:'success',
@@ -41,7 +45,8 @@ exports.uploadFile=async(req,res)=>{
     });
 }
 
-exports.uploadFileSingle=async(req,res)=>{
+//upload single file
+exports.uploadFileSingle=async(req,res,next)=>{
     //getting file
     const uploadedFiles = req.files.upload;
     const directoryName=req.body.directory;
@@ -50,13 +55,17 @@ exports.uploadFileSingle=async(req,res)=>{
     fs.mkdirSync(fileDir);
     fs.writeFile(path.join(fileDir,'index.html'), uploadedFiles.data, (err) => {
         if (err) {
-          return res.status(500).send(err);
+          next(new Error('server_error'));
         }
         //url for the uploaded files
         const siteURL = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${directoryName}`;
 
         const token = req.cookies.token;
         jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
+            if(err)
+            {
+                next(new Error('token_expired'));
+            }
             const site=await SiteURL.create({userId:decoded.userId,url:siteURL});
             res.render('Home',{page:'singleUpload',isLoggedIn,status:true,
             siteURL});

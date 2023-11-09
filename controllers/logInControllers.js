@@ -4,25 +4,31 @@ const jwt = require('jsonwebtoken');
 
 exports.logInUser = async (req, res,next) => {
     const { username,password } = req.body;
+
     try {
+      // Get the user information from database
       const user= await Users.findOne({where:{name: username}});
       const userPass=user.password;
+      //decode the password
       bcrypt.compare( password,userPass, (err, result) => {
-        if (result) {
+        if(err)
+        {
+          res.redirect('/login?loggedIn=failed');
+        }else if (result) {
+            //update the user state
             const token=jwt.sign({userId:user.userId},process.env.SECRET_KEY);
             //set as cookie
             res.cookie('token', token, { httpOnly: true});
-            // Passwords match
-            // res.redirect('/upload');
             next();
         } else {
             // Passwords don't match
-            console.log('Password is incorrect');
+            res.redirect('/login?loggedIn=wrong_password');
         }
     });
     } catch (error) {
       console.log(error);
-      res.status(400).send('Error creating user');
+      //if error 
+      res.redirect('/login?loggedIn=failed');
     }
 };
 

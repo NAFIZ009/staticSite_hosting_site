@@ -6,7 +6,9 @@ const path = require('path');
 exports.dataImport=(req,res,next)=>{
     const token = req.cookies.token;
     const {userId}=jwt.verify(token,process.env.SECRET_KEY);
+    //state for empty project
     let empty=false;
+    //getting project information
     SiteURL.findAll({raw:true,where:{userId}})
     .then(resp=>{
         if(resp.length==0) empty=true;
@@ -35,4 +37,7 @@ exports.dataImport=(req,res,next)=>{
         const isLoggedIn=req.isLoggedIn;
         res.render('Home',{page:'dashboard',data:resp,isLoggedIn,empty});
     })
+    .catch(err => {
+        res.send('Error Occurred');
+    });
 }
