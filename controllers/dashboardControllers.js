@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const SiteURL = require("../models/SiteURL");
 const path = require('path');
-
+const fs = require('fs');
+const { promisify } = require('util');
 
 exports.dataImport=(req,res,next)=>{
     const token = req.cookies.token;
@@ -11,7 +12,8 @@ exports.dataImport=(req,res,next)=>{
     //getting project information
     SiteURL.findAll({raw:true,where:{userId}})
     .then(resp=>{
-        if(resp.length==0) empty=true;
+        if(resp.length==0)  empty=true; 
+
         resp.forEach(data=>{
             //add file name
             const filename=path.basename(data.url);
@@ -34,10 +36,44 @@ exports.dataImport=(req,res,next)=>{
             data.createdFormattedDate=createdFormattedDate;
             data.updatedFormattedDate=updatedFormattedDate;
         });
+
         const isLoggedIn=req.isLoggedIn;
+
+        if(!empty)
+        {
+            req.DashboardData=resp;
+        }
+        // next();
         res.render('Home',{page:'dashboard',data:resp,isLoggedIn,empty});
     })
     .catch(err => {
+        console.log(err);
         res.send('Error Occurred');
     });
 }
+
+exports.deleteProject=async(req, res, next) => {
+    const id=req.params.id;
+    const fileName=req.params.fileName;
+    const userId=req.userId;
+    
+    SiteURL.destroy({where:{
+        id
+    }}).then(deletedRows=>{
+        if (deletedRows > 0) {
+            
+            // const unlinkAsync = promisify(fs.unlink);
+            fs.rm(path.join(__dirname,'..','uploads',userId,fileName), { recursive: true }, (err) => {
+                if (err) {
+                  console.error(err);
+                } else {
+                    console.log("deleted");
+                    res.status(204).send("success");
+                }
+              });
+            
+        } else {
+
+        }
+    })
+};

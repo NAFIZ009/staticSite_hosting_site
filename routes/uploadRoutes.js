@@ -28,7 +28,7 @@ uploadRoute.get('/',tokenAuth,isLoggedIn,(req,res)=>{
 });
 
 //zip file will be send by users and the api will unzip it and store in local storage 
-uploadRoute.post('/',inputValidation,tokenAuth,directoryGenerator,uploadControllers.uploadFile);
+uploadRoute.post('/',tokenAuth,inputValidation,directoryGenerator,uploadControllers.uploadFile);
 
 
 //entry point for single upload

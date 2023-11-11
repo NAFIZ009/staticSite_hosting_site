@@ -44,6 +44,9 @@
               >
             </p>
           </div>
+          <button onclick="deleteItem(<%= JSON.stringify(info) %>)" class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-600 font-semibold">
+            Delete
+          </button>          
         </li>
         <%})%> 
         <%} else {%>
@@ -55,3 +58,18 @@
     </div>
   </div>
 </div>
+<script>
+ 
+  async function deleteItem(item) {
+    const {id,fileName}=item;
+        fetch(`dashboard/${id}/${fileName}`, {
+          method: 'DELETE',
+        }).then(response=>{
+          if(response.status==204)
+          {
+            window.location.reload();
+          }
+        })
+  }
+
+</script>

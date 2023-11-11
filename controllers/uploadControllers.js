@@ -29,7 +29,7 @@ exports.uploadFile=async(req,res,next)=>{
     //url for the uploaded files
     const siteURL = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${zipFolderName}`;
 
-    console.log('Uploading')
+
     // res.send('Files uploaded successfully!URL: ' + siteURL);
     const token = req.cookies.token;
     jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
@@ -37,11 +37,22 @@ exports.uploadFile=async(req,res,next)=>{
         {
             next(new Error('token_expired'));
         }
-        const site=await SiteURL.create({userId:decoded.userId,url:siteURL})
-        res.send({
-            status:'success',
-            siteURL
-        });
+        // console.log({userId:decoded.userId,url:siteURL});
+        
+
+        const data={userId:decoded.userId,url:siteURL};
+        SiteURL.create({userId:decoded.userId,url:siteURL}).then(result =>{
+            res.send({
+                status:'success',
+                siteURL
+            });
+        }).catch(err =>{
+            console.log(err);
+            res.send({
+                status:'error',
+                siteURL:'/'
+            });
+        })
     });
 }
 
@@ -58,7 +69,7 @@ exports.uploadFileSingle=async(req,res,next)=>{
           next(new Error('server_error'));
         }
         //url for the uploaded files
-        const siteURL = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${directoryName}`;
+        const url = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${directoryName}`;
 
         const token = req.cookies.token;
         jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
@@ -66,11 +77,11 @@ exports.uploadFileSingle=async(req,res,next)=>{
             {
                 next(new Error('token_expired'));
             }
-            const site=await SiteURL.create({userId:decoded.userId,url:siteURL});
+            const {userId} = decoded;
+            const site=await SiteURL.create({userId,url});
             res.render('Home',{page:'singleUpload',isLoggedIn,status:true,
-            siteURL});
+            siteURL:url});
         });
     });
-    
-    
 }
+

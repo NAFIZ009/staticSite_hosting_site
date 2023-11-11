@@ -8,6 +8,7 @@ const isLoggedIn=(req,res,next)=>{
     }
     //verify token
     jwt.verify(token,process.env.SECRET_KEY, (err, decoded) => {
+        req.userId=decoded.userId;
         if (err) {
             req.isLoggedIn=false;
             next();

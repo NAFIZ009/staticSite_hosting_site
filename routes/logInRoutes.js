@@ -2,6 +2,7 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const logInControllers = require('../controllers/logInControllers');
 const isLoggedIn = require('../middleware/isLoggedIn');
+const { dataImport } = require('../controllers/dashboardControllers');
 
 const logInRoute=express();
 
@@ -24,7 +25,7 @@ logInRoute.get('/',isLoggedIn,(req, res) => {
 });
 
 //login check
-logInRoute.post('/',logInControllers.logInUser,(req, res) => {
+logInRoute.post('/',logInControllers.logInUser,dataImport,(req, res) => {
     res.redirect('/upload?loggedIn=complete');
 });
 

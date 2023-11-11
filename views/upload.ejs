@@ -94,9 +94,11 @@
         document.getElementById('msg').innerHTML="Please place your <span class='font-bold'>index.html</span> file in the root directory";
         return;
       }
+
       //zipping the uploaded file
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+
         if (
           file.type == "text/html" ||
           file.type == "text/css" ||
@@ -112,9 +114,11 @@
         .then(content=> {
 
           // Trigger download of the zip file
-          const blob = new Blob([content], { type: "application/zip" });
+          // const blob = new Blob([content], { type: "application/zip" });
           const formData = new FormData();
-          formData.append("upload", blob);
+          formData.append("upload", content);
+
+          console.log(formData);
 
           // sending the zip file to the server
           fetch("/upload", {
@@ -150,7 +154,7 @@
         })
         .catch(err=>{
           document.getElementById('alert').classList.remove('hidden');
-          document.getElementById('msg').innerHTML="Can't Upload the directory.Please try again";
+          document.getElementById('msg').innerHTML="Connection Error.Can't Upload the directory.Please try again";
         });
 
     }else{

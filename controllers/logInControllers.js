@@ -4,11 +4,18 @@ const jwt = require('jsonwebtoken');
 
 exports.logInUser = async (req, res,next) => {
     const { username,password } = req.body;
-
+    // console.log(username, password);
     try {
       // Get the user information from database
       const user= await Users.findOne({where:{name: username}});
+      //if user is not found
+      if (!user) {
+        res.redirect('/login?loggedIn=wrong_username');
+        return;
+      }
+      
       const userPass=user.password;
+      
       //decode the password
       bcrypt.compare( password,userPass, (err, result) => {
         if(err)

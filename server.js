@@ -18,6 +18,7 @@ app.get('/',isLoggedIn,(req,res)=>{
     res.render('Home',{page:'home',isLoggedIn});
 });
 
+
 app.get('/logout',(req,res)=>{
     res.clearCookie('token');
     res.redirect('/login'); 
@@ -54,5 +55,3 @@ app.use((err,req, res, next)=>{
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
-
-

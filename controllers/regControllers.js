@@ -8,8 +8,10 @@ exports.createUser = async (req, res) => {
     
     try {
       const user = await Users.create({ name:username, password });
+      
       res.redirect('/login?reg=complete');
     } catch (error) {
+      console.log(error.errors[0].message);
       res.redirect('?reg=failed');
     }
 };
