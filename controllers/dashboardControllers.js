@@ -66,6 +66,7 @@ exports.deleteProject=async(req, res, next) => {
             fs.rm(path.join(__dirname,'..','uploads',userId,fileName), { recursive: true }, (err) => {
                 if (err) {
                   console.error(err);
+                  res.status(400).send("error");
                 } else {
                     console.log("deleted");
                     res.status(204).send("success");

@@ -44,7 +44,7 @@
               >
             </p>
           </div>
-          <button onclick="deleteItem(<%= JSON.stringify(info) %>)" class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-600 font-semibold">
+          <button onclick="deleteItem(<%= JSON.stringify(info) %>)" class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-600 font-semibold" id="dltBtn">
             Delete
           </button>          
         </li>
@@ -68,8 +68,13 @@
           if(response.status==204)
           {
             window.location.reload();
+          }else
+          {
+            document.getElementById('dltBtn').innerHTML='Error';
           }
-        })
+        }).catch(error=>{
+          document.getElementById('dltBtn').innerHTML='Error';
+        });
   }
 
 </script>
