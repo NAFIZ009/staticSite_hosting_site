@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const SiteURL = require("../models/SiteURL");
 const path = require('path');
-const fs = require('fs');
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
 const { promisify } = require('util');
 
 exports.dataImport=(req,res,next)=>{

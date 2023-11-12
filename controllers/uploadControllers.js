@@ -1,7 +1,7 @@
 const AdmZip = require('adm-zip');
 const SiteURL = require('../models/SiteURL');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
 const path = require('path');
 const isLoggedIn = require('../middleware/isLoggedIn');
 

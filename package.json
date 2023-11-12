@@ -4,12 +4,13 @@
   "description": "A Static Site Hosting Project",
   "main": "server.js",
   "scripts": {
-    "start":"node server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jalal Ahmed",
   "license": "ISC",
   "dependencies": {
+    "@cyclic.sh/s3fs": "^1.2.9",
     "adm-zip": "^0.5.10",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",

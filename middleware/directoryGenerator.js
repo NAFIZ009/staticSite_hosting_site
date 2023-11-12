@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
 const jwt = require('jsonwebtoken');
 
 const directoryGenerator=(req,res,next)=>{
