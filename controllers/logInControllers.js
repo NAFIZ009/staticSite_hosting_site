@@ -20,6 +20,7 @@ exports.logInUser = async (req, res,next) => {
       bcrypt.compare( password,userPass, (err, result) => {
         if(err)
         {
+          console.log(err);
           res.redirect('/login?loggedIn=failed');
         }else if (result) {
             //update the user state
