@@ -20,7 +20,7 @@ logInRoute.get('/',isLoggedIn,(req, res) => {
     const loggedIn=req.query.loggedIn;
     //check if the user is logged in
     const isLoggedIn=req.isLoggedIn;
-    res.render('home',{page:'login',isLoggedIn,reg,loggedIn});
+    res.render('Home',{page:'login',isLoggedIn,reg,loggedIn});
 });
 
 //login check
