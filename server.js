@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv=require('dotenv').config();
 const cookieParser = require('cookie-parser');
-const port = 3000;
+const port =process.env.PORT || 3000;
 const tokenAuth = require('./middleware/privateRouteVerification/tokenAuth');
 const isLoggedIn = require('./middleware/isLoggedIn');
 //app config
@@ -47,7 +47,11 @@ app.use('/site/:siteID',(req,res,next)=>{
 },express.static('uploads'));
 
 app.use((err,req, res, next)=>{
-    res.send("Server error.Please try again");
+    if(err)
+    {
+        res.send("Server error.Please try again");
+    }
+    
 });
 
 

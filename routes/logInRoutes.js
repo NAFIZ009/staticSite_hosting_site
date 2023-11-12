@@ -25,7 +25,7 @@ logInRoute.get('/',isLoggedIn,(req, res) => {
 });
 
 //login check
-logInRoute.post('/',logInControllers.logInUser,dataImport,(req, res) => {
+logInRoute.post('/',logInControllers.logInUser,(req, res) => {
     res.redirect('/upload?loggedIn=complete');
 });
 

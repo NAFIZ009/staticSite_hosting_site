@@ -1,4 +1,4 @@
-const jwt=require('jsonwebtoken')
+const jwt=require('jsonwebtoken');
 const isLoggedIn=(req,res,next)=>{
     const token = req.cookies.token;
     //if token is not available
