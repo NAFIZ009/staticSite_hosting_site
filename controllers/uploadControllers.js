@@ -12,7 +12,8 @@ exports.uploadFile=async(req,res,next)=>{
     
     //unzipping the folder and placed it
     const zip=new AdmZip(uploadedFiles.data);
-    zip.extractAllTo(req.siteDirectory,'true');
+    // zip.extractAllTo(req.siteDirectory,'true');
+    zip.extractAllTo('/tmp','true');
     
     //getting zip file original name
     let zipFolderName = '';
