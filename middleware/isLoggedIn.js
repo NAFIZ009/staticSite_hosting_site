@@ -1,4 +1,5 @@
 const jwt=require('jsonwebtoken');
+
 const isLoggedIn=(req,res,next)=>{
     const token = req.cookies.token;
     //if token is not available
@@ -8,10 +9,12 @@ const isLoggedIn=(req,res,next)=>{
     }
     //verify token
     jwt.verify(token,process.env.SECRET_KEY, (err, decoded) => {
-        req.userId=decoded.userId;
         if (err) {
             req.isLoggedIn=false;
             next();
+        }else
+        {
+            req.userId=decoded.userId;
         }
     });
     //declare state

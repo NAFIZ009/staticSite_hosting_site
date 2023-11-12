@@ -2,7 +2,6 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const logInControllers = require('../controllers/logInControllers');
 const isLoggedIn = require('../middleware/isLoggedIn');
-const { dataImport } = require('../controllers/dashboardControllers');
 
 const logInRoute=express();
 
