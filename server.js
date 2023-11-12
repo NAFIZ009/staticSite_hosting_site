@@ -49,9 +49,9 @@ app.use('/site/:siteID',(req,res,next)=>{
 app.use((err,req, res, next)=>{
     if(err)
     {
+        console.log(err);
         res.send("Server error.Please try again");
     }
-    
 });
 
 
