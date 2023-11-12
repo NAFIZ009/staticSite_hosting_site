@@ -1,8 +1,7 @@
 const AdmZip = require('adm-zip');
 const SiteURL = require('../models/SiteURL');
 const jwt = require('jsonwebtoken');
-// const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
-const fs = require('fs');
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
 const path = require('path');
 const isLoggedIn = require('../middleware/isLoggedIn');
 
@@ -14,10 +13,7 @@ exports.uploadFile=async(req,res,next)=>{
     //unzipping the folder and placed it
     const zip=new AdmZip(uploadedFiles.data);
     // zip.extractAllTo(req.siteDirectory,'true');
-    zip.extractAllTo('/tmp','true');
-    
-    const files=fs.readdirSync('/tmp');
-    console.log(files);
+    zip.extractAllTo(req.siteDirectory,'true');
 
     //getting zip file original name
     let zipFolderName = '';
