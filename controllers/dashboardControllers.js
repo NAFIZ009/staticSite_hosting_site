@@ -63,7 +63,7 @@ exports.deleteProject=async(req, res, next) => {
         if (deletedRows > 0) {
             
             // const unlinkAsync = promisify(fs.unlink);
-            fs.rm(path.join(__dirname,'..','uploads',userId,fileName), { recursive: true }, (err) => {
+            fs.rm(path.join('uploads',userId,fileName), { recursive: true }, (err) => {
                 if (err) {
                   console.error(err);
                   res.status(400).send("error");
