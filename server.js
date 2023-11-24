@@ -40,11 +40,11 @@ app.use('/dashboard',require('./routes/dashboardRoutes'));
 app.use('/img',express.static('public'))
 
 //static file access
-app.use('/site/:siteID',(req,res,next)=>{
-    const siteID = req.params.siteID;
-    req.url=`/${siteID}${req.url}`;
-    next();
-},express.static('uploads'));
+// app.use('/site/:siteID',(req,res,next)=>{
+//     const siteID = req.params.siteID;
+//     req.url=`/${siteID}${req.url}`;
+//     next();
+// },express.static('uploads'));
 
 app.use((err,req, res, next)=>{
     if(err)

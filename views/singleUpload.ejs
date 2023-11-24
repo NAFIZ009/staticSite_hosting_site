@@ -57,6 +57,12 @@
                 />
               </div>
             </div>
+            <% if(err=='error'){ %>
+            <div class="bg-red-100 mt-2 text-blue-700 px-4 py-3 rounded relative text-red-600 font-semibold" role="alert" id="alert">
+              <strong class="">Error!</strong>
+              <span class="block sm:inline" id="msg">Try After Some Time</span>
+            </div>
+            <% } %>
           </div>
           <p class="my-6 ms-4 text-lg leading-8 text-gray-600 font-semibold">
             <a href="/upload" class="">Want Deploy Full Directory?</a></a>
@@ -65,6 +71,7 @@
             <button
               type="submit"
               class="flex items-center justify-center gap-x-1 p-3 font-semibold text-gray-900 hover:bg-gray-100 w-full"
+              id="submitButton"
             >
               <i class="fa-solid fa-cloud-arrow-up flex-none text-gray-400"></i>
               <span class="font-bold">Upload</span>
@@ -82,5 +89,18 @@
       
       </div>
     </div>
+    <script>
+      document.getElementById('form').addEventListener('submit',()=>{
+        const subBtn=document.getElementById('submitButton');
+        subBtn.setAttribute("disabled", "true");
+        subBtn.innerHTML='<div class="w-8 h-8 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>';
+      })
+      <% if( err=='error') { %>
+      {
+        const subBtn=document.getElementById('submitButton');
+        subBtn.setAttribute("disabled", "true");
+        subBtn.innerHTML='<i class="fa-solid fa-cloud-arrow-up flex-none text-gray-400"></i><span class="font-bold">Upload</span>';
+      <% } %>
+    </script>
   </div>
-  
+ 

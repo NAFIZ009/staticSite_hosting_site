@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 const SiteURL = require("../models/SiteURL");
 const path = require('path');
-const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
-const { promisify } = require('util');
+const s3 = require("../config/aws");
 
 exports.dataImport=(req,res,next)=>{
     const token = req.cookies.token;
@@ -53,28 +52,106 @@ exports.dataImport=(req,res,next)=>{
 }
 
 exports.deleteProject=async(req, res, next) => {
-    const id=req.params.id;
-    const fileName=req.params.fileName;
-    const userId=req.userId;
-    
-    SiteURL.destroy({where:{
-        id
-    }}).then(deletedRows=>{
-        if (deletedRows > 0) {
-            
-            // const unlinkAsync = promisify(fs.unlink);
-            fs.rm(path.join('uploads',userId,fileName), { recursive: true }, (err) => {
-                if (err) {
-                  console.error(err);
-                  res.status(400).send("error");
-                } else {
-                    console.log("deleted");
-                    res.status(204).send("success");
-                }
-              });
-            
-        } else {
+    const { id,url }=req.query;
 
+    //delete project
+    const deleteParams = {
+        Bucket: process.env.CYCLIC_BUCKET_NAME,
+        Key: url
+    };
+
+    s3.deleteObject(deleteParams, (errs, DeleteData) => {
+        if (errs) {
+            console.error('Error deleting object from S3:', errs);
+            res.status(400).send("error");
+        } else {
+            SiteURL.destroy({where:{id}})
+                .then(deletedRows=>{
+                    if (deletedRows > 0){
+                        console.log("deleted");
+                        res.status(204).send("success");
+                    }else
+                    {
+                        console.error(err);
+                        res.status(400).send("error");
+                    }
+                }).catch(err=>{
+                    console.error(err);
+                    res.status(400).send("error");
+                })
         }
-    })
+    });
+        
+
+
+
+
+
+
+
+
+
+
+
+    // console.log(id, fileName, userId);
+    // console.log(`uploads/${userId}/${fileName}`);
+    // const dirPath=path.join('uploads', userId, fileName);
+
+    // // const state=logFileContents(`uploads/${userId}/${fileName}`)
+    // const state=logFileContents('uploads/302e9af3-0207-4321-8f4b-016e1d62984b/best-five-dom')
+
+    // if(state)
+    // {
+    //     SiteURL.destroy({where:{
+    //         id
+    //     }})
+    //     .then(deletedRows=>{
+    //         if (deletedRows > 0){
+    //             console.log("deleted");
+    //             res.status(204).send("success");
+    //         }else
+    //         {
+    //             console.error(err);
+    //             res.status(400).send("error");
+    //         }
+    //     }).catch(err=>{
+    //         console.error(err);
+    //         res.status(400).send("error");
+    //     })
+    // }
+    // // .then(re=>{
+        
+    // // }).catch(err=>{
+    // //     console.error(err);
+    // //     res.status(400).send("error");
+    // // });
+
+    // function logFileContents(directoryPath) {
+    //     console.log(directoryPath);
+    //     // Read the contents of the directory
+    //     fsP.readdir(directoryPath)
+    //     .then(files=>{
+    //         files.forEach((file) => {
+    //             const filePath = path.join(directoryPath, file);
+        
+    //             // Check if it's a directory
+    //             if (fs.statSync(filePath).isDirectory()) {
+    //                 // Recursively log contents of subdirectories
+    //                logFileContents(filePath);
+    //             } else {
+    //                 // Log contents of files
+    //                 fs.rmSync(filePath);
+    //             }
+    //         });
+    //     })
+    //     .then(()=>{
+    //         fs.exists(`uploads/${userId}/${fileName}`,(ex)=>{
+    //             if(ex){
+    //                 return true;
+    //             }else{
+    //                 return false;
+    //             }
+    //         })
+    //     })
+    // }
 };

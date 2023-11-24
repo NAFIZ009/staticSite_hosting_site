@@ -15,7 +15,7 @@ dashboardRoute.set('view engine',"ejs");
 dashboardRoute.get('/',tokenAuth,isLoggedIn,dataImport);
 
 //delete project
-dashboardRoute.delete('/:id/:fileName',tokenAuth,isLoggedIn,deleteProject);
+dashboardRoute.delete('/',tokenAuth,isLoggedIn,deleteProject);
 
 
 //exporting route

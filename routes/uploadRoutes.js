@@ -34,7 +34,7 @@ uploadRoute.post('/',tokenAuth,inputValidation,directoryGenerator,uploadControll
 //entry point for single upload
 uploadRoute.get('/single',tokenAuth,isLoggedIn,(req,res)=>{
     const isLoggedIn=req.isLoggedIn;
-    res.render('Home',{page:'singleUpload',isLoggedIn,status:false,siteURL:''});
+    res.render('Home',{page:'singleUpload',isLoggedIn,status:false,siteURL:'',err:''});
 });
 
 //single file upload
