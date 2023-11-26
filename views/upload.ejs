@@ -38,6 +38,7 @@
                 class="block w-full rounded-md border-0 py-1.5 pl-4 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
                 placeholder="Project Name"
                 id="fileInput"
+                required
               />
             </div>
           </div>
@@ -114,6 +115,9 @@
 
     const files = e.target.upload.files;
     const projectName = e.target.projectName.value;
+
+    console.log(files);
+
     //creating zip files
     const zip = new JSZip();
     //checking the file length
@@ -133,6 +137,8 @@
         return;
       }
 
+      const deployData=[];
+
       //zipping the uploaded file
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -141,7 +147,9 @@
           file.type == "text/html" ||
           file.type == "text/css" ||
           file.type == "text/javascript" ||
-          file.type == "image/jpeg"
+          file.type == "image/jpeg"||
+          file.type == "image/png"||
+          file.type == "image/jpg"
         ) {
           zip.file(file.webkitRelativePath, file);
         }

@@ -6,78 +6,75 @@ const fsP = require('@cyclic.sh/s3fs/promises')(process.env.CYCLIC_BUCKET_NAME);
 const path = require('path');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const s3 = require('../config/aws');
-
+const JSZip = require('jszip');
 
 //upload directory
 exports.uploadFile=async(req,res,next)=>{
     //getting zip file
     const uploadedFiles = req.files.upload;
 
-    const uploadParams = {
-        Bucket: process.env.CYCLIC_BUCKET_NAME,
-        Key: req.siteDirectory,
-        Body: uploadedFiles.data,
-    };
+    // https://hosty.cyclic.app/
+    //unzip uploaded files
+    const zip = new JSZip();
+    // http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/bestfive.test
+// http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/style.css
+// http://localhost:3000/302e9af3-0207-4321-8f4b-016e1d62984b/img/
+    const siteURL = `${req.protocol}://${req.get('host')}/${req.siteDirectory}.test`;
+    const siteURLStatic = `${req.protocol}://${req.get('host')}/${req.siteID}`;
+    // Load the zip file content
+    zip.loadAsync(uploadedFiles.data)
+        .then(async (zip) => {
+            // Extract all files
+            const files = await Promise.all(
+                Object.keys(zip.files).map(async (filename) => {
+                    const file = zip.files[filename];
+                    const content = await file.async('string');
+                    // Split the string into an array based on '/'
+                    let parts = filename.split('/');
 
-    const siteURL = `${req.protocol}://${req.get('host')}/hosty.${req.siteDirectory}.test`;
+                    // Remove the first part
+                    parts.shift();
 
-    
-    s3.upload(uploadParams, (err, data) => {
-        if (err) {
-          console.error(`Error uploading`,err);
-        //   console.error(`Error uploading ${uploadParams.key} to S3:`, err);
+                    // Join the remaining parts back into a string
+                    let filenameEdited = parts.join('/');
 
-        } else {
+                    return { filenameEdited, content };
+                })
+            );
+
+            files.forEach(file => {
+
+                const uploadParams = {
+                    Bucket: process.env.CYCLIC_BUCKET_NAME,
+                    Key:file.filenameEdited=='index.html'? siteURL : `${siteURLStatic}/${file.filenameEdited}`,
+                    Body: file.content,
+                };
+
+
+                s3.upload(uploadParams, (err, data) => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+            })
+        })
+        .then(()=>{
             SiteURL.create({userId:req.siteID,url:siteURL}).then(result =>{
                 res.send({
                     status:'success',
                     siteURL
                 });
             }).catch(err =>{
-                console.log(err);
-                res.send({
-                    status:'error',
-                    siteURL:'/'
-                });
+                throw err;
             })
-        }
-    });
-
-    
-    // //unzipping the folder and placed it
-    // const zip=new AdmZip(uploadedFiles.data);
-    // // zip.extractAllTo(req.siteDirectory,'true');
-    // zip.extractAllTo(req.siteDirectory,'true');
-
-    // //getting zip file original name
-    // let zipFolderName = '';
-    // const entries = zip.getEntries();
-    // // Get the folder name by examining the first entry path
-    // if (entries.length > 0) {
-    //     const firstEntry = entries[0];
-    //     const entryNameParts = firstEntry.entryName.split('/');
-    //     if (entryNameParts.length > 1) {
-    //         zipFolderName = entryNameParts[0];
-    //     }
-    // }
-    
-    // //url for the uploaded files
-    // const siteURL = `${req.protocol}://${req.get('host')}/site/${req.siteID}/${zipFolderName}`;
-
-
-    // // res.send('Files uploaded successfully!URL: ' + siteURL);
-    // const token = req.cookies.token;
-    // jwt.verify(token,process.env.SECRET_KEY,async (err, decoded) => {
-    //     if(err)
-    //     {
-    //         next(new Error('token_expired'));
-    //     }
-    //     // console.log({userId:decoded.userId,url:siteURL});
-        
-
-    //     // const data={userId:decoded.userId,url:siteURL};
- 
-    // });
+        })
+        .catch((error) => {
+            console.error(error);
+            res.send({
+                status:'error',
+                siteURL:'/'
+            });
+        });
 }
 
 

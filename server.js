@@ -36,8 +36,8 @@ app.use('/login',require('./routes/logInRoutes'));
 //dashboard
 app.use('/dashboard',require('./routes/dashboardRoutes'));
 
-//for images
-app.use('/img',express.static('public'))
+//access hosted site
+app.use('/hosty.deploy',require('./routes/siteRoutes'));
 
 //static file access
 // app.use('/site/:siteID',(req,res,next)=>{
