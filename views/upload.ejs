@@ -116,7 +116,6 @@
     const files = e.target.upload.files;
     const projectName = e.target.projectName.value;
 
-    console.log(files);
 
     //creating zip files
     const zip = new JSZip();
@@ -130,12 +129,12 @@
       );
 
       //error handling for missing index.html file in root folder
-      if (!rootFile) {
-        document.getElementById("alert").classList.remove("hidden");
-        document.getElementById("msg").innerHTML =
-          "Please place your <span class='font-bold'>index.html</span> file in the root directory";
-        return;
-      }
+      // if (!rootFile) {
+      //   document.getElementById("alert").classList.remove("hidden");
+      //   document.getElementById("msg").innerHTML =
+      //     "Please place your <span class='font-bold'>index.html</span> file in the root directory";
+      //   return;
+      // }
 
       const deployData=[];
 
@@ -151,6 +150,10 @@
           file.type == "image/png"||
           file.type == "image/jpg"
         ) {
+          // if(file.type == "image/jpg")
+          // {
+          //   console.log(file);
+          // }
           zip.file(file.webkitRelativePath, file);
         }
       }
@@ -161,6 +164,7 @@
         .then((content) => {
           // Trigger download of the zip file
           // const blob = new Blob([content], { type: "application/zip" });
+          console.log(content);
           const formData = new FormData();
           formData.append("upload", content, `${projectName}`);
 

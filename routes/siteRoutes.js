@@ -2,6 +2,8 @@ const express = require('express');
 const s3 = require('../config/aws');
 const JSZip = require('jszip');
 const sharp = require('sharp');
+const imageSize = require('image-size');
+const imageDataURI = require('image-data-uri');
 
 const siteRoute= express();
 
@@ -33,32 +35,17 @@ siteRoute.get('/*',(req,res)=>{
 
     s3.getObject(getParams,async(err,data)=>{
         if(err){
-            console.log(getParams);
             console.log(err);
             res.status(404).json({ error: 'Resource not found' });
         }else{
             if(req.url.endsWith('.jpg')||req.url.endsWith('.jpeg')||req.url.endsWith('.png'))
             {
-                // console.log(req.url); 
-                // console.log(data);
-                // const codes=data.Body.toString('utf8');
-                // console.log(codes.content); 
-                sharp(data.Body)
-                    .jpeg((jpegBuffer) => {
-                        // Set the appropriate content type for JPEG
-                        res.setHeader('Content-Type', 'image/jpeg');
-    
-                        // Send the converted JPEG buffer to the client
-                        res.send(jpegBuffer);
-                        })
-                    // .toBuffer()
-                    // .then()
+                res.send(data.Body);
             }else
             {
                 const codes=data.Body.toString('utf-8');
                 res.send(codes);
             }
-            
         }
     })
 

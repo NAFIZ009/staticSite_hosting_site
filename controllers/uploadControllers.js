@@ -10,25 +10,38 @@ const JSZip = require('jszip');
 
 //upload directory
 exports.uploadFile=async(req,res,next)=>{
-    //getting zip file
+    //zipped file from client side
     const uploadedFiles = req.files.upload;
-
+    
     // https://hosty.cyclic.app/
     //unzip uploaded files
     const zip = new JSZip();
+    //URLs for site
     // http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/bestfive.test
-// http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/style.css
-// http://localhost:3000/302e9af3-0207-4321-8f4b-016e1d62984b/img/
+    // http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/style.css
+    // http://localhost:3000/302e9af3-0207-4321-8f4b-016e1d62984b/img/
     const siteURL = `${req.protocol}://${req.get('host')}/${req.siteDirectory}.test`;
     const siteURLStatic = `${req.protocol}://${req.get('host')}/${req.siteID}`;
     // Load the zip file content
     zip.loadAsync(uploadedFiles.data)
         .then(async (zip) => {
-            // Extract all files
+            // creating a array to hold the uploaded files content with their filename
+            console.log(zip.files);
             const files = await Promise.all(
                 Object.keys(zip.files).map(async (filename) => {
                     const file = zip.files[filename];
-                    const content = await file.async('string');
+                    let count=0;
+                    
+                    let content;
+                    if(filename.endsWith('.jpg'))
+                    {
+                        content = await file.async('uint8array');
+                        
+                    }else
+                    {
+                        content = await file.async('string');
+                    }
+
                     // Split the string into an array based on '/'
                     let parts = filename.split('/');
 
@@ -38,11 +51,15 @@ exports.uploadFile=async(req,res,next)=>{
                     // Join the remaining parts back into a string
                     let filenameEdited = parts.join('/');
 
+                    //object with filename and content
                     return { filenameEdited, content };
                 })
             );
 
+            //upload the files on AWS with the filename as key
             files.forEach(file => {
+
+                
 
                 const uploadParams = {
                     Bucket: process.env.CYCLIC_BUCKET_NAME,

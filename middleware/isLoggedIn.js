@@ -5,7 +5,6 @@ const isLoggedIn=(req,res,next)=>{
     
     //if token is not available
     if (!token) {
-        console.log(token);
         req.isLoggedIn=false;
         next();
     }

@@ -11,14 +11,16 @@ const sequelize = new Sequelize(DB_NAME,DB_USERNAME,DB_PASSWORD,{
     dialectOptions: {
         ssl: {
         rejectUnauthorized: true,
-        ca: fs.readFileSync(path.join(__dirname,'ca.pem')),  // Path to the CA certificate (optional, if using SSL)
-        },
+        // ca: fs.readFileSync(path.join(__dirname,'ca.pem')),  // Path to the CA certificate (optional, if using SSL)
+        // },
+        ca:process.env.ca
+        }
     },
     logging: false,
     pool: {
         max: 35, // Maximum number of connection in pool
         min: 15, // Minimum number of connection in pool
-        acquire: 600000, // Maximum time, in milliseconds, that pool will try to get connection before throwing error
+        acquire: 1000000, // Maximum time, in milliseconds, that pool will try to get connection before throwing error
         idle: 1000 // Maximum time, in milliseconds, that a connection can be idle before being released
     }
 });
