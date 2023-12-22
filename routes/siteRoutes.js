@@ -17,7 +17,7 @@ siteRoute.get('/*',(req,res)=>{
 // http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/style.css
 
     let getParams={};
-    if(req.url.endsWith('.test')){
+    if(req.url.endsWith('.test')|| req.url.endsWith('index.html')){
         getParams = {
             Bucket: process.env.CYCLIC_BUCKET_NAME,
             Key: `http://localhost:3000/hosty.deploy${req.url}`,
@@ -47,6 +47,7 @@ siteRoute.get('/*',(req,res)=>{
                 res.send(codes);
             }
         }
+
     })
 
 

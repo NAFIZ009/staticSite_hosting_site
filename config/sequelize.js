@@ -3,14 +3,13 @@ const path = require('path');
 const {Sequelize} = require('sequelize');
 const {DB_NAME,DB_USERNAME,DB_PASSWORD}=process.env;
 const sequelize = new Sequelize(DB_NAME,DB_USERNAME,DB_PASSWORD,{
-    host: 'mysql-2054b447-jalalahmednafiz-3971.a.aivencloud.com',
+    host: process.env.DB_HOST,
     // host:'localhost',
     dialect: 'mysql',
-    port: 15741,
+    port: process.env.DB_PORT,
     ssl: true,
     dialectOptions: {
         ssl: {
-        rejectUnauthorized: true,
         // ca: fs.readFileSync(path.join(__dirname,'ca.pem')),  // Path to the CA certificate (optional, if using SSL)
         // },
         ca:process.env.ca
