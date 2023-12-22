@@ -13,6 +13,7 @@ const sequelize = new Sequelize(DB_NAME,DB_USERNAME,DB_PASSWORD,{
         // ca: fs.readFileSync(path.join(__dirname,'ca.pem')),  // Path to the CA certificate (optional, if using SSL)
         // },
         ca:fs.readFileSync('D:/Simple_Static_Site_Hosting_Project/config/ca.pem')
+
         }
     },
     logging: false,
