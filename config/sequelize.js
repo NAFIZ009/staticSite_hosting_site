@@ -10,9 +10,9 @@ const sequelize = new Sequelize(DB_NAME,DB_USERNAME,DB_PASSWORD,{
     ssl: true,
     dialectOptions: {
         ssl: {
-        // ca: fs.readFileSync(path.join(__dirname,'ca.pem')),  // Path to the CA certificate (optional, if using SSL)
+        ca: fs.readFileSync(path.join(__dirname,'ca.pem')),  // Path to the CA certificate (optional, if using SSL)
         // },
-        ca:fs.readFileSync('/Simple_Static_Site_Hosting_Project/config/ca.pem')
+        // ca:fs.readFileSync('/Simple_Static_Site_Hosting_Project/config/ca.pem')
 
         }
     },
