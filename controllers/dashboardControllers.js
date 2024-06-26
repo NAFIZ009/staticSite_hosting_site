@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const SiteURL = require("../models/SiteURL");
 const path = require("path");
-const s3 = require("../config/firebase");
+const storage = require("../models/Storage");
 
 exports.dataImport = (req, res, next) => {
   const token = req.cookies.token;
@@ -55,11 +55,10 @@ exports.deleteProject = async (req, res, next) => {
 
   //delete project
   const deleteParams = {
-    Bucket: process.env.CYCLIC_BUCKET_NAME,
     Key: url,
   };
 
-  s3.deleteObject(deleteParams, (errs, DeleteData) => {
+  storage.deleteObject(deleteParams, (errs, DeleteData) => {
     if (errs) {
       console.error("Error deleting object from S3:", errs);
       res.status(400).send("error");
