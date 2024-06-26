@@ -24,7 +24,8 @@ uploadRoute.use(fileUpload());
 uploadRoute.get('/',tokenAuth,isLoggedIn,(req,res)=>{
     const isLoggedIn=req.isLoggedIn;
     const err=req.query.err;
-    res.render('Home',{page:'upload',isLoggedIn,err});
+    res.render('Home',{page:'singleUpload',isLoggedIn,status:false,siteURL:'',err:''});
+    // res.render('Home',{page:'upload',isLoggedIn,err});
 });
 
 //zip file will be send by users and the api will unzip it and store in local storage 

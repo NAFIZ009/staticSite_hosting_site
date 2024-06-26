@@ -51,9 +51,22 @@ function getObject(getParams, callback) {
         callback(null, { Body: contents });
       }
     });
-  }
+}
+
+function deleteObject(deleteParams, callback) {
+  const file = firebase.bucket.file(deleteParams.Key);
+
+  file.delete((err, apiResponse) => {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, apiResponse);
+    }
+  });
+}
 
 module.exports = {
   upload,
-  getObject
+  getObject,
+  deleteObject
 };
