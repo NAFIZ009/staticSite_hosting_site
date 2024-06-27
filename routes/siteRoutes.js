@@ -5,6 +5,7 @@ const sharp = require("sharp");
 const imageSize = require("image-size");
 const imageDataURI = require("image-data-uri");
 const storage = require("../models/Storage");
+const cheerio = require("cheerio");
 
 const siteRoute = express();
 
@@ -32,47 +33,125 @@ siteRoute.get("/*", (req, res) => {
   // Extract the part without the part starting from '.' and ending with '/'
   const regex = /\.([^/]*)\//;
   const fullStringWithoutDotToSlash = req.url.replace(regex, "/");
-
+  console.log(modifiedPath);
   let getParams = {};
   if (req.url.endsWith(".test")) {
     getParams = {
-      Bucket: process.env.CYCLIC_BUCKET_NAME,
       Key: `hosty.deploy${fullStringWithoutDotToSlash}`,
     };
+    const modifiedPathArr = modifiedPath.split("/");
 
-  }else if (req.url.endsWith("index.html")){
+    storage.getObject(getParams, async (err, data) => {
+      if (err) {
+        console.log(err);
+        res.status(404).json({ error: "Resource not found" });
+      } else {
+        const htmlContent = data.Body.toString("utf-8");
+        const $ = cheerio.load(htmlContent);
+        const cssLinks = [];
+
+        $('link[rel="stylesheet"]').each((index, element) => {
+          if (!$(element).attr("href").startsWith("https://")) {
+            cssLinks.push($(element).attr("href"));
+          }
+        });
+
+        const cssContents = await Promise.all(
+          cssLinks.map((href) => {
+            const cssPath = `hosty.deploy/${modifiedPathArr[0]}/${modifiedPathArr[1]}/${href}`;
+            return new Promise((resolve, reject) => {
+              storage.getObject({ Key: cssPath }, (cssErr, cssData) => {
+                if (cssErr) {
+                  resolve(""); // Resolve with empty string if CSS not found
+                } else {
+                  resolve(cssData.Body.toString("utf-8"));
+                }
+              });
+            });
+          })
+        );
+
+        let combinedCss = "<style>";
+        cssContents.forEach((cssContent) => {
+          combinedCss += cssContent;
+        });
+        combinedCss += "</style>";
+        $("head").append(combinedCss);
+        res.setHeader("Content-Type", "text/html");
+        res.send($.html());
+      }
+    });
+  } else if (req.url.endsWith("index.html")) {
     getParams = {
-      Bucket: process.env.CYCLIC_BUCKET_NAME,
       Key: `hosty.deploy/${modifiedPath}`,
     };
-  }
-   else {
+    const modifiedPathArr = modifiedPath.split("/");
+
+    storage.getObject(getParams, async (err, data) => {
+      if (err) {
+        console.log(err);
+        res.status(404).json({ error: "Resource not found" });
+      } else {
+        const htmlContent = data.Body.toString("utf-8");
+        const $ = cheerio.load(htmlContent);
+        const cssLinks = [];
+
+        $('link[rel="stylesheet"]').each((index, element) => {
+          if (!$(element).attr("href").startsWith("https://")) {
+            cssLinks.push($(element).attr("href"));
+          }
+        });
+
+        const cssContents = await Promise.all(
+          cssLinks.map((href) => {
+            const cssPath = `hosty.deploy/${modifiedPathArr[0]}/${modifiedPathArr[1]}/${href}`;
+            return new Promise((resolve, reject) => {
+              storage.getObject({ Key: cssPath }, (cssErr, cssData) => {
+                if (cssErr) {
+                  resolve(""); // Resolve with empty string if CSS not found
+                } else {
+                  resolve(cssData.Body.toString("utf-8"));
+                }
+              });
+            });
+          })
+        );
+
+        let combinedCss = "<style>";
+        cssContents.forEach((cssContent) => {
+          combinedCss += cssContent;
+        });
+        combinedCss += "</style>";
+        $("head").append(combinedCss);
+        res.setHeader("Content-Type", "text/html");
+        res.send($.html());
+      }
+    });
+  } else {
     getParams = {
-      Bucket: process.env.CYCLIC_BUCKET_NAME,
       Key: `hosty.deploy/${modifiedPath}`,
     };
+    storage.getObject(getParams, async (err, data) => {
+      if (err) {
+        console.log(err);
+        res.status(404).json({ error: "Resource not found" });
+      } else {
+        if (
+          req.url.endsWith(".jpg") ||
+          req.url.endsWith(".jpeg") ||
+          req.url.endsWith(".png")
+        ) {
+          res.send(data.Body);
+        } else {
+          const codes = data.Body.toString("utf-8");
+          res.send(codes);
+        }
+      }
+    });
   }
 
   console.log(req.url, modifiedPath);
   console.log(getParams);
-
-  storage.getObject(getParams, async (err, data) => {
-    if (err) {
-      console.log(err);
-      res.status(404).json({ error: "Resource not found" });
-    } else {
-      if (
-        req.url.endsWith(".jpg") ||
-        req.url.endsWith(".jpeg") ||
-        req.url.endsWith(".png")
-      ) {
-        res.send(data.Body);
-      } else {
-        const codes = data.Body.toString("utf-8");
-        res.send(codes);
-      }
-    }
-  });
 
   //   console.log(getParams.Key);
   //   s3.getObject(getParams,async (err, data) => {

@@ -41,7 +41,7 @@ exports.uploadFile = async (req, res, next) => {
         Object.keys(zip.files).map(async (filename) => {
           const file = zip.files[filename];
           let count = 0;
-
+          console.log(filename);
           let content;
           if (filename.endsWith(".jpg")) {
             content = await file.async("uint8array");
@@ -75,7 +75,7 @@ exports.uploadFile = async (req, res, next) => {
           Body: file.content,
           ContentType: file.mimeType,
         };
-
+        console.log(uploadParams);
         storage.upload(uploadParams, (err, data) => {
           if (err) {
             throw err;
