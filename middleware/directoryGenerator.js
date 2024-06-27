@@ -7,9 +7,13 @@ const directoryGenerator=(req,res,next)=>{
     const {userId}=jwt.verify(req.cookies.token,process.env.SECRET_KEY);
     const folderName=req.body.directory||req.files.upload.name;
     //creating root path for project directory
-    const siteDirectory = `hosty.deploy/${userId}/${folderName.replace(/\s+/g, '')}`;
+    const siteDirectory = `hosty.deploy/${userId}.${folderName.replace(/\s+/g, '')}/${folderName.replace(/\s+/g, '')}`;
+    const FileDirectory = `hosty.deploy/${userId}/${folderName.replace(/\s+/g, '')}`;
     req.siteDirectory = siteDirectory;
+    req.FileDirectory = FileDirectory;
     req.siteID = userId;
+    req.folderName = folderName;
+    console.log(siteDirectory)
     next();
 }
 

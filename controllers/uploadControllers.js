@@ -9,8 +9,8 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const storage = require("../models/Storage");
 const JSZip = require("jszip");
 
-const URL = "https://hosty-cua8.onrender.com";
-// const URL = "http://localhost:3000";
+// const URL = "https://hosty-cua8.onrender.com";
+const URL = "http://localhost:3000";
 
 //upload directory
 exports.uploadFile = async (req, res, next) => {
@@ -24,21 +24,24 @@ exports.uploadFile = async (req, res, next) => {
   // http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/bestfive.test
   // http://localhost:3000/hosty.deploy/302e9af3-0207-4321-8f4b-016e1d62984b/style.css
   // http://localhost:3000/302e9af3-0207-4321-8f4b-016e1d62984b/img/
-  const siteURL = `${req.protocol}://${req.get("host")}/${
+  const siteURL = `${URL}/${
     req.siteDirectory
   }.test`;
-  const siteURLStatic = `${req.protocol}://${req.get("host")}/${req.siteID}`;
+  const fileURL = `${
+    req.FileDirectory
+  }`;
+  const siteURLStatic = `${URL}/${req.siteID}`;
+  const fileURLStatic = `${req.siteID}`;
   // Load the zip file content
   zip
     .loadAsync(uploadedFiles.data)
     .then(async (zip) => {
       // creating a array to hold the uploaded files content with their filename
-      console.log(zip.files);
       const files = await Promise.all(
         Object.keys(zip.files).map(async (filename) => {
           const file = zip.files[filename];
           let count = 0;
-
+          console.log(filename);
           let content;
           if (filename.endsWith(".jpg")) {
             content = await file.async("uint8array");
@@ -65,14 +68,14 @@ exports.uploadFile = async (req, res, next) => {
       //upload the files on AWS with the filename as key
       files.forEach((file) => {
         const uploadParams = {
-          Key:
-            file.filenameEdited == "index.html"
-              ? siteURL
-              : `${siteURLStatic}/${file.filenameEdited}`,
+          Key:`${fileURL}/${file.filenameEdited}`,
+            // file.filenameEdited == "index.html"
+            //   ? fileURL
+            //   : `${fileURLStatic}/${file.filenameEdited}`,
           Body: file.content,
           ContentType: file.mimeType,
         };
-
+        console.log(uploadParams);
         storage.upload(uploadParams, (err, data) => {
           if (err) {
             throw err;
