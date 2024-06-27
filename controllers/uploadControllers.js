@@ -9,8 +9,8 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const storage = require("../models/Storage");
 const JSZip = require("jszip");
 
-// const URL = "https://hosty-cua8.onrender.com";
-const URL = "http://localhost:3000";
+const URL = "https://hosty-cua8.onrender.com";
+// const URL = "http://localhost:3000";
 
 //upload directory
 exports.uploadFile = async (req, res, next) => {
