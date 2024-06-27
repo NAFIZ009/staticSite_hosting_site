@@ -39,7 +39,7 @@ function getObject(getParams, callback) {
   
     // Remove .test from the key if it exists
     if (key.endsWith('.test')) {
-      key = key.replace('.test', '');
+      key = key.replace('.test', '/index.html');
     }
   
     const file = firebase.bucket.file(key);
