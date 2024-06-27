@@ -34,12 +34,19 @@ siteRoute.get("/*", (req, res) => {
   const fullStringWithoutDotToSlash = req.url.replace(regex, "/");
 
   let getParams = {};
-  if (req.url.endsWith(".test") || req.url.endsWith("index.html")) {
+  if (req.url.endsWith(".test")) {
     getParams = {
       Bucket: process.env.CYCLIC_BUCKET_NAME,
       Key: `hosty.deploy${fullStringWithoutDotToSlash}`,
     };
-  } else {
+
+  }else if (req.url.endsWith("index.html")){
+    getParams = {
+      Bucket: process.env.CYCLIC_BUCKET_NAME,
+      Key: `hosty.deploy/${modifiedPath}`,
+    };
+  }
+   else {
     getParams = {
       Bucket: process.env.CYCLIC_BUCKET_NAME,
       Key: `hosty.deploy/${modifiedPath}`,

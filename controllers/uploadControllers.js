@@ -28,8 +28,8 @@ exports.uploadFile = async (req, res, next) => {
     req.siteDirectory
   }.test`;
   const fileURL = `${
-    req.siteDirectory
-  }.test`;
+    req.FileDirectory
+  }`;
   const siteURLStatic = `${URL}/${req.siteID}`;
   const fileURLStatic = `${req.siteID}`;
   // Load the zip file content
@@ -68,7 +68,7 @@ exports.uploadFile = async (req, res, next) => {
       //upload the files on AWS with the filename as key
       files.forEach((file) => {
         const uploadParams = {
-          Key:`${req.siteDirectory}/${file.filenameEdited}`,
+          Key:`${fileURL}/${file.filenameEdited}`,
             // file.filenameEdited == "index.html"
             //   ? fileURL
             //   : `${fileURLStatic}/${file.filenameEdited}`,
